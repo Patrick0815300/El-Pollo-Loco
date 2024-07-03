@@ -14,18 +14,18 @@ class Chicken extends MovableObject {
 
 
         this.x = 200 + Math.random() * 500;
-        this.moveLeft();
-        this.speed = 0.15 + Math.random() * 0.6; // Zufällige zahl zwischen 0.15 und 0.25
+        
+        this.speed = 0.15 + Math.random() * 0.65; // Zufällige zahl zwischen 0.15 und 0.25
         this.animate();
     }
 
     animate() {
         setInterval(() => {
-            let i = this.currentImage % this.IMAGES_WALKING.length; // let i = 0 % 6; Modulo ist der mathematische Rest -> 
-            // i = 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, ...
-            let path = this.IMAGES_WALKING[i];
-            this.img = this.imageCache[path];
-            this.currentImage++;   
+            this.moveLeft();
+        }, 1000 / 60); // entspricht 60 FPS (60 * pro Sekunde)
+
+        setInterval(() => {
+            this.playAnimation(this.IMAGES_WALKING);
         }, 100);
     }
 }

@@ -10,7 +10,11 @@ function init() {
     console.log('My Character is', world.character)
 }
 
-document.addEventListener('keydown', (event) => {
+/**
+ * Listener to check the key on keyboard
+ * the key set the class Keyboard bolean true or false 
+ */
+document.addEventListener('keydown', (event) => { 
     if (event.keyCode == 39) {
         keyboard.RIGHT = true;
     }
