@@ -10,6 +10,10 @@ class World {
     camera_x = 0;
 
     statusbar = new Statusbars();
+    statusbarBottle = new StatusbarBottle();
+    statusbarCoin = new StatusbarCoin();
+
+    throwableObjects = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -17,7 +21,7 @@ class World {
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
-        this.checkCollisions();
+        this.run();
     }
 
 
@@ -33,15 +37,27 @@ class World {
      * check Character colllison with chicken
      * reduce the energy level by collision
      */
-    checkCollisions() {
+    run() {
         setInterval(() => {
-            this.level.enemies.forEach((enemy) => {
-                if (this.character.isColliding(enemy)) {
-                    this.character.hit();
-                    console.log('Energielevel: ', this.character.energy)
-                }
-            });
+            this.checkCollision();
+            this.checkThrowObjects();
         }, 200);
+    }
+
+    checkThrowObjects() {
+        if (this.keyboard.D) {
+            let bottle = new ThrowableObject(this.character.x + this.character.width, this.character.y);
+            this.throwableObjects.push(bottle);
+        }
+    }
+
+    checkCollision() {
+        this.level.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+                this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum setzten der Statusbar
+            }
+        });
     }
 
     /**
@@ -52,14 +68,23 @@ class World {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Kontext wird zurückgesetzt, da sonst die geladenen Bilder bei jeder Wiederholung neu erscheinen und nicht verschwinden
 
         this.ctx.translate(this.camera_x, 0); // Kontext = Bildauschnitt/Hintergrund wird verschoben um camera_x
-
         this.addObjectstoMap(this.level.backgroundObject);
+
+
+        this.ctx.translate(-this.camera_x, 0); 
+        // -------- Space for fixed objects on canvas --------
+        this.addToMap(this.statusbar);
+        this.addToMap(this.statusbarBottle);
+        this.addToMap(this.statusbarCoin);
+        this.ctx.translate(this.camera_x, 0);
+
+
         this.addObjectstoMap(this.level.clouds);
         this.addObjectstoMap(this.level.enemies);
+        
+        this.addObjectstoMap(this.throwableObjects)
         this.addToMap(this.character);
 
-        this.addToMap(this.statusbar)
-        
         this.ctx.translate(-this.camera_x, 0); // Zurück schieben vom Kontext
 
         // draw() wird immer wieder aufgerufen
