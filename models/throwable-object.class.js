@@ -7,16 +7,16 @@ class ThrowableObject extends MovableObject {
     
     height = 90;
     width = 80;
-    bottles = 10;
+    
 
     constructor(x, y) {
         super();
         this.loadImage(this.IMAGES_SALSABOTTLE_ROTATE[0])
         this.loadImages(this.IMAGES_SALSABOTTLE_ROTATE);
         this.animate();
-        this.throw(x, y);
-                
+        this.throw(x, y); 
     }
+
 
     animate() {
         setInterval(() => {
@@ -26,7 +26,8 @@ class ThrowableObject extends MovableObject {
         
     }
 
-    throw(x, y) {
+
+    throw(x, y) { 
         this.x = x;
         this.y = y;
         this.speedY = 30;
@@ -34,10 +35,5 @@ class ThrowableObject extends MovableObject {
         setInterval(() => {
             this.x += 10; 
         }, 25);
-    }
-
-    throwBottle() {
-        this.bottles -= 1;
-        console.log(bottles)
     }
 }

@@ -44,8 +44,9 @@ class Character extends MovableObject {
 
     world;
     walking_sound = new Audio('../audio/step.mp3');
-
-
+    
+    bottles = 10;
+    coins = 1;
 
     constructor() {
         super().loadImage('../img/2_character_pepe/2_walk/W-21.png',);
@@ -76,10 +77,6 @@ class Character extends MovableObject {
                 this.jump();
             }
 
-            if (this.world.keyboard.D) {
-                
-            }
-
             this.world.camera_x = -this.x + 100; // Verschieben der Welt um die gelaufen Wert x
         }, 1000 / 60);
 
@@ -96,7 +93,18 @@ class Character extends MovableObject {
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }
-
         }, 40);
+    }
+
+    decreaseObject(item) {
+        this[item] -= 1;
+        console.log(this[item] + ' ' + item + ' sind vorhanden')
+    }
+
+    collectObject(item) {
+        if (this[item] < 10) {
+            this[item] += 1;
+        } 
+        console.log(this[item] + ' ' + item + ' sind vorhanden')
     }
 }

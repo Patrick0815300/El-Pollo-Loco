@@ -1,7 +1,7 @@
 class World {
 
     character = new Character();
-    level = level1; // Deklariert das Level mit backgroundObject, clouds, enemies
+    level = level1; // Deklariert das Level mit backgroundObject, clouds, enemies, ...
 
     canvas;
     ctx;
@@ -12,8 +12,12 @@ class World {
     statusbar = new Statusbars();
     statusbarBottle = new StatusbarBottle();
     statusbarCoin = new StatusbarCoin();
+    statusbarEndboss = new StatusbarEndboss();
 
     throwableObjects = [];
+
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -41,13 +45,17 @@ class World {
         setInterval(() => {
             this.checkCollision();
             this.checkThrowObjects();
+            this.checkCollectBottles();
+            this.checkCollectCoins();
         }, 200);
     }
 
     checkThrowObjects() {
-        if (this.keyboard.D) {
+        if (this.keyboard.D && this.character.bottles > 0) { // throw bottles until 0 
             let bottle = new ThrowableObject(this.character.x + this.character.width, this.character.y);
             this.throwableObjects.push(bottle);
+            this.character.decreaseObject('bottles');
+            this.statusbarBottle.setPercentage(this.character.bottles * 10);
         }
     }
 
@@ -59,6 +67,37 @@ class World {
             }
         });
     }
+
+    checkCollectBottles() {
+        this.level.collectableObjects.forEach((object, index) => {
+            if (this.character.isColliding(object) && object instanceof Bottle) {
+                this.character.collectObject('bottles');
+                this.statusbarBottle.setPercentage(this.character.bottles * 10);
+                this.level.collectableObjects.splice(index, 1) // delete the collectet bottle by the array in level1
+            }
+        });
+    }
+
+    checkCollectCoins() {
+        this.level.collectableObjects.forEach((object, index) => {
+            if (this.character.isColliding(object) && object instanceof Coin) {
+                this.character.collectObject('coins');
+                this.statusbarCoin.setPercentage(this.character.coins * 10);
+                this.level.collectableObjects.splice(index, 1) // delete the collectet bottle by the array in level1
+            }
+        });
+    }
+
+
+    throwEnemy() {
+        this.level.throwableObjects.forEach((object) => {
+            if (this.character.isColliding(object)) {
+                
+                
+            }
+        })
+    }
+
 
     /**
      * function to draw all to the canvas - background and objects
@@ -81,6 +120,9 @@ class World {
 
         this.addObjectstoMap(this.level.clouds);
         this.addObjectstoMap(this.level.enemies);
+        this.addObjectstoMap(this.level.collectableObjects);
+        
+        this.addToMap(this.statusbarEndboss);
         
         this.addObjectstoMap(this.throwableObjects)
         this.addToMap(this.character);

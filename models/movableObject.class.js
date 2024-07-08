@@ -5,8 +5,8 @@ class MovableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
 
-
     
+
     moveRight() {
         this.x += this.speed;
     }
@@ -69,12 +69,10 @@ class MovableObject extends DrawableObject {
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000; // Speichern in Sekunden und nicht Millisekunden
-        return timepassed < 1; // Zeit wie lange die Animation hurt angezeigt werden soll nach dem hit
+        return timepassed < 0.8; // Zeit wie lange die Animation hurt angezeigt werden soll nach dem hit
     }
 
     isDead() {
         return this.energy == 0;
     }
-
-
 }
