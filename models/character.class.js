@@ -44,6 +44,10 @@ class Character extends MovableObject {
 
     world;
     walking_sound = new Audio('../audio/step.mp3');
+    jump_sound = new Audio('../audio/jump.mp3');
+    throw_sound = new Audio('../audio/throw.mp3');
+    collect_coin_sound = new Audio('../audio/collectCoin.mp3');
+    hurt_sound = new Audio('../audio/hurtCharatcter.mp3');
     
     bottles = 10;
     coins = 1;
@@ -75,6 +79,7 @@ class Character extends MovableObject {
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) { // Wenn der die Taste Space und der Charakter nicht auf dem Boden steht
                 this.jump();
+                this.jump_sound.play();
             }
 
             this.world.camera_x = -this.x + 100; // Verschieben der Welt um die gelaufen Wert x
@@ -86,6 +91,7 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+                this.hurt_sound.play();
             } else if (this.isAboveGround()) {
                     this.playAnimation(this.IMAGES_JUMPING);
             } else {

@@ -2,11 +2,12 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+
 function init() {
-    
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
+    
 }
+
 
 /**
  * Listener to check the key on keyboard
@@ -53,3 +54,7 @@ document.addEventListener('keyup', (event) => {
         keyboard.D = false;
     }
 })
+
+function startGame() {
+    world = new World(canvas, keyboard);
+}

@@ -8,7 +8,8 @@ class StatusbarBottle extends Statusbars {
         this.setPercentage(100); // setzt am anfang die 100% health da sonst kein Wert zum abrufen ist
      }
 
-     setPercentage(percentage) {
+     
+    setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.IMAGES_STATUS_BOTTLE[this.resolveImageIndex()];  
         this.img = this.imageCache[path]; // Laden eines Img auf dem Cache

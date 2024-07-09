@@ -16,7 +16,9 @@ class World {
 
     throwableObjects = [];
 
+    hitObjects = new Set(); // Set, um getroffene Objekte zu verfolgen
 
+    gameover = '../img/9_intro_outro_screens/game_over/game over.png';
 
 
     constructor(canvas, keyboard) {
@@ -47,8 +49,10 @@ class World {
             this.checkThrowObjects();
             this.checkCollectBottles();
             this.checkCollectCoins();
+            this.throwEnemy();
         }, 200);
     }
+
 
     checkThrowObjects() {
         if (this.keyboard.D && this.character.bottles > 0) { // throw bottles until 0 
@@ -56,17 +60,20 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.decreaseObject('bottles');
             this.statusbarBottle.setPercentage(this.character.bottles * 10);
+            this.character.throw_sound.play();
         }
     }
 
+
     checkCollision() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
+            if (this.character.isColliding(enemy)) { // colliding character - enemy
                 this.character.hit();
                 this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum setzten der Statusbar
             }
         });
     }
+
 
     checkCollectBottles() {
         this.level.collectableObjects.forEach((object, index) => {
@@ -77,6 +84,7 @@ class World {
             }
         });
     }
+
 
     checkCollectCoins() {
         this.level.collectableObjects.forEach((object, index) => {
@@ -90,12 +98,19 @@ class World {
 
 
     throwEnemy() {
-        this.level.throwableObjects.forEach((object) => {
-            if (this.character.isColliding(object)) {
-                
-                
+        this.throwableObjects.forEach((object) => {
+            if (!this.hitObjects.has(object)) { // Überprüfen, ob das Objekt bereits getroffen wurde
+                this.level.enemies.forEach((enemy) => {
+                    if (enemy.isColliding(object)) {
+                        console.log('Das Gegner wurde getroffen !');
+                        this.hitObjects.add(object); // Objekt als getroffen markieren
+                        let endboss = this.getEnemie(this.level.enemies) // Durchsucht das Array nach dem Endboss
+                        this.statusbarEndboss.setPercentage(endboss.energy);
+                        endboss.decreaseEnergy();
+                    }
+                }); 
             }
-        })
+        });
     }
 
 
@@ -175,6 +190,7 @@ class World {
         mo.x = mo.x * -1;
     }
     
+
     /**
      * function to resset the flip for moving right
      * @param {Object} mo - moveableObject Class
@@ -182,6 +198,11 @@ class World {
     flipImageBack(mo) {
         this.ctx.restore(); // Rückängig machen der Spiegelung und des Verschieben bie flipImage
         mo.x = mo.x * -1;
+    }
+
+
+    getEnemie(enemies) {
+        return enemies.find(enemy => enemy instanceof Endboss);
     }
 
     

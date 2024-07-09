@@ -12,5 +12,6 @@ class StatusbarEndboss extends Statusbars {
         this.percentage = percentage;
         let path = this.IMAGES_STATUS_ENDBOSS[this.resolveImageIndex()];  
         this.img = this.imageCache[path]; // Laden eines Img auf dem Cache
+        console.log(percentage)
     }
 }

@@ -17,6 +17,7 @@
     <script src="./models/backgroudObjects.class.js"></script>
     <script src="./models/character.class.js"></script>
     <script src="./models/chicken.class.js"></script>
+    <script src="./models/chicken-small.class.js"></script>
     <script src="./models/clouds.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
     <script src="./models/level.class.js"></script>
@@ -29,11 +30,17 @@
     
 </head>
 <body onload="init()">
-    <h1>El Pollo Loco</h1>
+    <h1><b>El Pollo Loco</b></h1>
 
-    <canvas id="canvas" width="720" height="480">
-
-    </canvas>
+    <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
+    <div id="container" class="container">
+        <img class="startscreen-img" src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="">
+        <div class="cont-btns">
+            <button>START</button>
+            <button>ANLEITUNG</button>
+        </div>
+    </div>
+    
 
 </body>
 </html>
