@@ -17,9 +17,8 @@ class World {
     throwableObjects = [];
 
     hitObjects = new Set(); // Set, um getroffene Objekte zu verfolgen
-
-    gameover = '../img/9_intro_outro_screens/game_over/game over.png';
-
+    
+    volumen = new ControllObjects();
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -28,6 +27,7 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
+        this.soundMuted = false; // Initialer Zustand des Tons
     }
 
 
@@ -40,8 +40,7 @@ class World {
 
 
     /**
-     * check Character colllison with chicken
-     * reduce the energy level by collision
+     * 
      */
     run() {
         setInterval(() => {
@@ -50,6 +49,7 @@ class World {
             this.checkCollectBottles();
             this.checkCollectCoins();
             this.throwEnemy();
+            this.checkEnergy();
         }, 200);
     }
 
@@ -81,6 +81,7 @@ class World {
                 this.character.collectObject('bottles');
                 this.statusbarBottle.setPercentage(this.character.bottles * 10);
                 this.level.collectableObjects.splice(index, 1) // delete the collectet bottle by the array in level1
+                this.character.collect_bottle_sound.play();
             }
         });
     }
@@ -92,6 +93,7 @@ class World {
                 this.character.collectObject('coins');
                 this.statusbarCoin.setPercentage(this.character.coins * 10);
                 this.level.collectableObjects.splice(index, 1) // delete the collectet bottle by the array in level1
+                this.character.collect_coin_sound.play();
             }
         });
     }
@@ -107,6 +109,7 @@ class World {
                         let endboss = this.getEnemie(this.level.enemies) // Durchsucht das Array nach dem Endboss
                         this.statusbarEndboss.setPercentage(endboss.energy);
                         endboss.decreaseEnergy();
+                        this.character.hit_endboss_sound.play();
                     }
                 }); 
             }
@@ -124,15 +127,6 @@ class World {
         this.ctx.translate(this.camera_x, 0); // Kontext = Bildauschnitt/Hintergrund wird verschoben um camera_x
         this.addObjectstoMap(this.level.backgroundObject);
 
-
-        this.ctx.translate(-this.camera_x, 0); 
-        // -------- Space for fixed objects on canvas --------
-        this.addToMap(this.statusbar);
-        this.addToMap(this.statusbarBottle);
-        this.addToMap(this.statusbarCoin);
-        this.ctx.translate(this.camera_x, 0);
-
-
         this.addObjectstoMap(this.level.clouds);
         this.addObjectstoMap(this.level.enemies);
         this.addObjectstoMap(this.level.collectableObjects);
@@ -141,6 +135,14 @@ class World {
         
         this.addObjectstoMap(this.throwableObjects)
         this.addToMap(this.character);
+
+
+        this.ctx.translate(-this.camera_x, 0); 
+        // -------- Space for fixed objects on canvas --------
+        this.addToMap(this.statusbar);
+        this.addToMap(this.statusbarBottle);
+        this.addToMap(this.statusbarCoin);
+        this.ctx.translate(this.camera_x, 0);
 
         this.ctx.translate(-this.camera_x, 0); // Zurück schieben vom Kontext
 
@@ -206,4 +208,17 @@ class World {
     }
 
     
+    toggleSound() {
+        this.soundMuted = !this.soundMuted; // Zustand umschalten
+        this.character.audio_sounds.forEach(audio => audio.muted = this.soundMuted);
+    }
+
+
+    checkEnergy() {
+        setInterval(() => {
+            if (this.getEnemie(this.level.enemies).y > 500) {
+                document.getElementById('youwon').classList.remove('d-none');
+            }
+        }, 1000);
+    }
 }

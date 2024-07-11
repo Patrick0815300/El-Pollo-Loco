@@ -5,7 +5,14 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
-    
+    document.getElementById('content').classList.add('d-none');
+    document.getElementById('canvas').classList.remove('d-none');
+    world = new World(canvas, keyboard);
+}
+
+
+function directions() {
+    document.getElementById('directions').classList.toggle('d-none');
 }
 
 
@@ -55,6 +62,40 @@ document.addEventListener('keyup', (event) => {
     }
 })
 
-function startGame() {
-    world = new World(canvas, keyboard);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const volumeOffBtn = document.getElementById('volumenOff');
+    volumeOffBtn.addEventListener('click', () => {
+        if (world) {
+            world.toggleSound();
+            volumeOffBtn.style.opacity = world.soundMuted ? '0.5' : '1.0';
+        }
+    });
+});
+
+
+function toggleFullScreen() {
+    const canvas = document.getElementById('canvas');
+    if (!document.fullscreenElement) {
+        if (canvas.requestFullscreen) {
+            canvas.requestFullscreen();
+        } else if (canvas.mozRequestFullScreen) { // Firefox
+            canvas.mozRequestFullScreen();
+        } else if (canvas.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+            canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) { // IE/Edge
+            canvas.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari, and Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // IE/Edge
+            document.msExitFullscreen();
+        }
+    }
 }
+

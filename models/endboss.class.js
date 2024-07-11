@@ -66,6 +66,7 @@ class Endboss extends MovableObject {
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
+                this.y += 50;
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             }
@@ -76,14 +77,9 @@ class Endboss extends MovableObject {
         this.energy -= 20;
         if (this.energy < 0) {
             this.energy = 0;
+            document.getElementById('youwon').classList.remove('d-none');
         } else {
             this.lastHit = new Date().getTime(); // Speichern der Zeit in Millisekunden seit dem 01.01.1970
         }
     }
-
-
-    dieAnimation() {
-        
-    }
-    
 }
