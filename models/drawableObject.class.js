@@ -30,7 +30,7 @@ class DrawableObject {
 
     
     drawFrame(ctx) {
-        if (this instanceof Endboss || this instanceof SmallChicken || this instanceof ThrowableObject) { // instanceof nimmt nur die gewälten classen und nicht alle
+        if (this instanceof Endboss || this instanceof Chicken || this instanceof Character) { // instanceof nimmt nur die gewälten classen und nicht alle
             ctx.beginPath();
             ctx.lineWidth = '5';
             ctx.strokeStyle = 'blue';

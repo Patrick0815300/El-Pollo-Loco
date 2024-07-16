@@ -6,13 +6,19 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById('canvas');
     document.getElementById('content').classList.add('d-none');
-    document.getElementById('canvas').classList.remove('d-none');
+    document.getElementById('canvas_container').classList.remove('d-none');
+    initLevel();
     world = new World(canvas, keyboard);
+    
 }
 
 
 function directions() {
     document.getElementById('directions').classList.toggle('d-none');
+}
+
+function resetWorld() {
+    location.reload();
 }
 
 
@@ -73,7 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
+/**
+ * function to toggle the fullscreen
+ * for different browser
+ */
 function toggleFullScreen() {
     const canvas = document.getElementById('canvas');
     if (!document.fullscreenElement) {

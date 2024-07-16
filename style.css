@@ -1,17 +1,24 @@
 body {
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     font-family: 'Papyrus', sans-serif;
+    background-image: url('./img/cactus-background.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}
+
+h1 {
+    font-size: 50px;
+    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 .d-none {
     display: none !important;
-}
-
-canvas {
-    background-color: black;
 }
 
 .container {
@@ -20,9 +27,15 @@ canvas {
     position: relative;
 }
 
-.content {
+.canvas-container {
+    position: relative;
     width: 720px;
     height: 480px;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
 }
 
 .startscreen-img {
@@ -76,18 +89,12 @@ h2 {
 
 .volumen-off-btn {
     width: 40px;
-    position: absolute;
-    right: 30px;
-    top: 0;
+    height: 40px;
     cursor: pointer;
 }
 
 .volumen-off-btn:hover {
     transform: scale(1.08);
-}
-
-.fullscreen {
-    right: 100px;
 }
 
 .youwon {
@@ -97,4 +104,31 @@ h2 {
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.8);
+}
+
+.fullscreen-sound {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: absolute;
+    top: 3%;
+    left: 0;
+    right: 0;
+}
+
+.play-again-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 3%;
+    left: 0;
+    right: 0;
+    margin-bottom: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
 }

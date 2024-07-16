@@ -8,24 +8,29 @@ class Chicken extends MovableObject {
         '../img/3_enemies_chicken/chicken_normal/1_walk/3_w.png',
     ];
 
+    hitFromAbove;
+
     constructor() {
         super().loadImage('../img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
 
-
-        this.x = 400 + Math.random() * 2200;
+        this.x = 600 + Math.random() * 2200;
         
-        this.speed = 0.15 + Math.random() * 0.65; // Zufällige zahl zwischen 0.15 und 0.25
+        this.speed = 0.15 + Math.random() * 0.65; // Zufällige zahl zwischen 0.15 und 0.65
         this.animate();
     }
 
     animate() {
-        setInterval(() => {
-            this.moveLeft();
-        }, 1000 / 60); // entspricht 60 FPS (60 * pro Sekunde)
-
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
+        this.moveLeftInterval = setInterval(() => {
+            if (!this.hitFromAbove) {
+                this.moveLeft();
+            }
+        }, 1000 / 60);
+    
+        this.animationInterval = setInterval(() => {
+            if (!this.hitFromAbove) {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
         }, 100);
     }
 }

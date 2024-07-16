@@ -6,6 +6,7 @@
     <title>El Pollo Loco</title>
 
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 
     <script src="./models/world.class.js"></script>
     <script src="./models/drawableObject.class.js"></script>
@@ -35,7 +36,18 @@
 
     
     <div id="container" class="container">
-        <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
+        <div id="canvas_container" class="canvas-container d-none">
+             <canvas id="canvas" width="720" height="480"></canvas>
+             <div class="fullscreen-sound">
+                <img id="volumenOff" class="volumen-off-btn" src="./img/volume-off-solid.svg" alt="VolumeOff">
+                <img onclick="toggleFullScreen()" id="fullscreen" class="fullscreen volumen-off-btn" src="./img/expand-solid.svg" alt="Fullscreen">
+             </div>
+
+             <img id="youwon" class="youwon d-none" src="./img/9_intro_outro_screens/win/won_2.png" alt="">
+             <img id="youlose" class="youwon d-none" src="./img/9_intro_outro_screens/game_over/game over.png" alt="">
+             <div id="play_again" class="play-again-container cont-btns d-none"><button onclick="resetWorld()">Play again</button></div>
+        </div>
+       
         <div id="content" class="content">
             <div class="cont-btns">
                 <button onclick="init()"><b>START</b></button>
@@ -50,13 +62,9 @@
                 <span>Flasche werfen: D-Taste</span>
             </div>
         </div>
-        
-        <img id="volumenOff" class="volumen-off-btn" src="./img/volume-off-solid.svg" alt="VolumeOff">
-        <img onclick="toggleFullScreen()" id="fullscreen" class="fullscreen volumen-off-btn" src="./img/expand-solid.svg" alt="Fullscreen">
-        <img id="youwon" class="youwon d-none" src="./img/9_intro_outro_screens/win/won_2.png" alt="">
     </div>
-    
-    
+    <a href="./legalnotice.html">Legal Notice</a>
+    <a href="./privacypolice.html">Privacy Police</a>
 
 </body>
 </html>

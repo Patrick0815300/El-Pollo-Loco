@@ -20,6 +20,10 @@ class World {
     
     volumen = new ControllObjects();
 
+    win_sound = new Audio('../audio/win.mp3');
+    lose_sound = new Audio('../audio/lose.mp3');
+    background_sound = new Audio('../audio/background.mp3');
+
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -40,7 +44,7 @@ class World {
 
 
     /**
-     * 
+     * to collect all functions 
      */
     run() {
         setInterval(() => {
@@ -67,13 +71,29 @@ class World {
 
     checkCollision() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) { // colliding character - enemy
-                this.character.hit();
-                this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum setzten der Statusbar
+            if (this.character.isColliding(enemy)) {
+                if (enemy instanceof Endboss) {
+                    // Seitliche Kollision für den Endboss
+                    this.character.hit();
+                    this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum Setzen der Statusbar
+                    console.log('Treffer SEITE');
+                } else if (this.character.y < 180 && !enemy.hitFromAbove) {
+                    // Kollision von oben für alle anderen Feinde
+                    enemy.height = 20;
+                    enemy.y += 80;
+                    enemy.hitFromAbove = true; // Markiere den Feind als von oben getroffen
+                    console.log(enemy.hitFromAbove);
+                } else if (this.character.y == 180 && !enemy.hitFromAbove) {
+                    // Seitliche Kollision für alle anderen Feinde
+                    this.character.hit();
+                    this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum Setzen der Statusbar
+                    console.log('Treffer SEITE');
+                }
             }
         });
     }
-
+    
+    
 
     checkCollectBottles() {
         this.level.collectableObjects.forEach((object, index) => {
@@ -171,10 +191,8 @@ class World {
         if (mo.otherDirection) { // prüfen ob otherDirection gesetzt ist oder nicht beim drücken der Pfeiltaste
             this.flipImage(mo);
         }
-
         mo.draw(this.ctx);
         mo.drawFrame(this.ctx);
-
         if (mo.otherDirection) { // Prüfen ob etwas verändert wurde, wenn ja dann 'restore'
             this.flipImageBack(mo);
         }
@@ -203,6 +221,11 @@ class World {
     }
 
 
+    /**
+     * function to get and select only the Endboss
+     * @param {Class} enemies - different classes defined in Array enemies
+     * @returns - true if Endboss
+     */
     getEnemie(enemies) {
         return enemies.find(enemy => enemy instanceof Endboss);
     }
@@ -218,6 +241,14 @@ class World {
         setInterval(() => {
             if (this.getEnemie(this.level.enemies).y > 500) {
                 document.getElementById('youwon').classList.remove('d-none');
+                document.getElementById('play_again').classList.remove('d-none');
+                this.win_sound.play();
+            }
+
+            if (this.character.energy == 0) {
+                document.getElementById('youlose').classList.remove('d-none');
+                document.getElementById('play_again').classList.remove('d-none');
+                this.lose_sound.play();
             }
         }, 1000);
     }

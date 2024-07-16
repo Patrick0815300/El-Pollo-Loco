@@ -77,7 +77,6 @@ class Endboss extends MovableObject {
         this.energy -= 20;
         if (this.energy < 0) {
             this.energy = 0;
-            document.getElementById('youwon').classList.remove('d-none');
         } else {
             this.lastHit = new Date().getTime(); // Speichern der Zeit in Millisekunden seit dem 01.01.1970
         }
