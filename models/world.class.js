@@ -16,8 +16,13 @@ class World {
 
     throwableObjects = [];
 
+    hitObjects = new Set(); // Set, um getroffene Objekte zu verfolgen
+    
+    volumen = new ControllObjects();
 
-
+    win_sound = new Audio('../audio/win.mp3');
+    lose_sound = new Audio('../audio/lose.mp3');
+    background_sound = new Audio('../audio/background.mp3');
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -26,6 +31,7 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
+        this.soundMuted = false; // Initialer Zustand des Tons
     }
 
 
@@ -38,8 +44,7 @@ class World {
 
 
     /**
-     * check Character colllison with chicken
-     * reduce the energy level by collision
+     * to collect all functions 
      */
     run() {
         setInterval(() => {
@@ -47,8 +52,11 @@ class World {
             this.checkThrowObjects();
             this.checkCollectBottles();
             this.checkCollectCoins();
+            this.throwEnemy();
+            this.checkEnergy();
         }, 200);
     }
+
 
     checkThrowObjects() {
         if (this.keyboard.D && this.character.bottles > 0) { // throw bottles until 0 
@@ -56,17 +64,36 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.decreaseObject('bottles');
             this.statusbarBottle.setPercentage(this.character.bottles * 10);
+            this.character.throw_sound.play();
         }
     }
+
 
     checkCollision() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum setzten der Statusbar
+                if (enemy instanceof Endboss) {
+                    // Seitliche Kollision für den Endboss
+                    this.character.hit();
+                    this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum Setzen der Statusbar
+                    console.log('Treffer SEITE');
+                } else if (this.character.y < 180 && !enemy.hitFromAbove) {
+                    // Kollision von oben für alle anderen Feinde
+                    enemy.height = 20;
+                    enemy.y += 80;
+                    enemy.hitFromAbove = true; // Markiere den Feind als von oben getroffen
+                    console.log(enemy.hitFromAbove);
+                } else if (this.character.y == 180 && !enemy.hitFromAbove) {
+                    // Seitliche Kollision für alle anderen Feinde
+                    this.character.hit();
+                    this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum Setzen der Statusbar
+                    console.log('Treffer SEITE');
+                }
             }
         });
     }
+    
+    
 
     checkCollectBottles() {
         this.level.collectableObjects.forEach((object, index) => {
@@ -74,9 +101,11 @@ class World {
                 this.character.collectObject('bottles');
                 this.statusbarBottle.setPercentage(this.character.bottles * 10);
                 this.level.collectableObjects.splice(index, 1) // delete the collectet bottle by the array in level1
+                this.character.collect_bottle_sound.play();
             }
         });
     }
+
 
     checkCollectCoins() {
         this.level.collectableObjects.forEach((object, index) => {
@@ -84,18 +113,27 @@ class World {
                 this.character.collectObject('coins');
                 this.statusbarCoin.setPercentage(this.character.coins * 10);
                 this.level.collectableObjects.splice(index, 1) // delete the collectet bottle by the array in level1
+                this.character.collect_coin_sound.play();
             }
         });
     }
 
 
     throwEnemy() {
-        this.level.throwableObjects.forEach((object) => {
-            if (this.character.isColliding(object)) {
-                
-                
+        this.throwableObjects.forEach((object) => {
+            if (!this.hitObjects.has(object)) { // Überprüfen, ob das Objekt bereits getroffen wurde
+                this.level.enemies.forEach((enemy) => {
+                    if (enemy.isColliding(object)) {
+                        console.log('Das Gegner wurde getroffen !');
+                        this.hitObjects.add(object); // Objekt als getroffen markieren
+                        let endboss = this.getEnemie(this.level.enemies) // Durchsucht das Array nach dem Endboss
+                        this.statusbarEndboss.setPercentage(endboss.energy);
+                        endboss.decreaseEnergy();
+                        this.character.hit_endboss_sound.play();
+                    }
+                }); 
             }
-        })
+        });
     }
 
 
@@ -109,15 +147,6 @@ class World {
         this.ctx.translate(this.camera_x, 0); // Kontext = Bildauschnitt/Hintergrund wird verschoben um camera_x
         this.addObjectstoMap(this.level.backgroundObject);
 
-
-        this.ctx.translate(-this.camera_x, 0); 
-        // -------- Space for fixed objects on canvas --------
-        this.addToMap(this.statusbar);
-        this.addToMap(this.statusbarBottle);
-        this.addToMap(this.statusbarCoin);
-        this.ctx.translate(this.camera_x, 0);
-
-
         this.addObjectstoMap(this.level.clouds);
         this.addObjectstoMap(this.level.enemies);
         this.addObjectstoMap(this.level.collectableObjects);
@@ -126,6 +155,14 @@ class World {
         
         this.addObjectstoMap(this.throwableObjects)
         this.addToMap(this.character);
+
+
+        this.ctx.translate(-this.camera_x, 0); 
+        // -------- Space for fixed objects on canvas --------
+        this.addToMap(this.statusbar);
+        this.addToMap(this.statusbarBottle);
+        this.addToMap(this.statusbarCoin);
+        this.ctx.translate(this.camera_x, 0);
 
         this.ctx.translate(-this.camera_x, 0); // Zurück schieben vom Kontext
 
@@ -154,10 +191,8 @@ class World {
         if (mo.otherDirection) { // prüfen ob otherDirection gesetzt ist oder nicht beim drücken der Pfeiltaste
             this.flipImage(mo);
         }
-
         mo.draw(this.ctx);
         mo.drawFrame(this.ctx);
-
         if (mo.otherDirection) { // Prüfen ob etwas verändert wurde, wenn ja dann 'restore'
             this.flipImageBack(mo);
         }
@@ -175,6 +210,7 @@ class World {
         mo.x = mo.x * -1;
     }
     
+
     /**
      * function to resset the flip for moving right
      * @param {Object} mo - moveableObject Class
@@ -184,5 +220,36 @@ class World {
         mo.x = mo.x * -1;
     }
 
+
+    /**
+     * function to get and select only the Endboss
+     * @param {Class} enemies - different classes defined in Array enemies
+     * @returns - true if Endboss
+     */
+    getEnemie(enemies) {
+        return enemies.find(enemy => enemy instanceof Endboss);
+    }
+
     
+    toggleSound() {
+        this.soundMuted = !this.soundMuted; // Zustand umschalten
+        this.character.audio_sounds.forEach(audio => audio.muted = this.soundMuted);
+    }
+
+
+    checkEnergy() {
+        setInterval(() => {
+            if (this.getEnemie(this.level.enemies).y > 500) {
+                document.getElementById('youwon').classList.remove('d-none');
+                document.getElementById('play_again').classList.remove('d-none');
+                this.win_sound.play();
+            }
+
+            if (this.character.energy == 0) {
+                document.getElementById('youlose').classList.remove('d-none');
+                document.getElementById('play_again').classList.remove('d-none');
+                this.lose_sound.play();
+            }
+        }, 1000);
+    }
 }

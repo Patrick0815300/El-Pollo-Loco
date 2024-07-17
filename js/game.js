@@ -2,11 +2,25 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+
 function init() {
-    
     canvas = document.getElementById('canvas');
+    document.getElementById('content').classList.add('d-none');
+    document.getElementById('canvas_container').classList.remove('d-none');
+    initLevel();
     world = new World(canvas, keyboard);
+    
 }
+
+
+function directions() {
+    document.getElementById('directions').classList.toggle('d-none');
+}
+
+function resetWorld() {
+    location.reload();
+}
+
 
 /**
  * Listener to check the key on keyboard
@@ -53,3 +67,44 @@ document.addEventListener('keyup', (event) => {
         keyboard.D = false;
     }
 })
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const volumeOffBtn = document.getElementById('volumenOff');
+    volumeOffBtn.addEventListener('click', () => {
+        if (world) {
+            world.toggleSound();
+            volumeOffBtn.style.opacity = world.soundMuted ? '0.5' : '1.0';
+        }
+    });
+});
+
+/**
+ * function to toggle the fullscreen
+ * for different browser
+ */
+function toggleFullScreen() {
+    const canvas = document.getElementById('canvas');
+    if (!document.fullscreenElement) {
+        if (canvas.requestFullscreen) {
+            canvas.requestFullscreen();
+        } else if (canvas.mozRequestFullScreen) { // Firefox
+            canvas.mozRequestFullScreen();
+        } else if (canvas.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+            canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) { // IE/Edge
+            canvas.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari, and Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // IE/Edge
+            document.msExitFullscreen();
+        }
+    }
+}
+

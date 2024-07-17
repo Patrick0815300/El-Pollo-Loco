@@ -6,6 +6,7 @@
     <title>El Pollo Loco</title>
 
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 
     <script src="./models/world.class.js"></script>
     <script src="./models/drawableObject.class.js"></script>
@@ -17,6 +18,7 @@
     <script src="./models/backgroudObjects.class.js"></script>
     <script src="./models/character.class.js"></script>
     <script src="./models/chicken.class.js"></script>
+    <script src="./models/chicken-small.class.js"></script>
     <script src="./models/clouds.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
     <script src="./models/level.class.js"></script>
@@ -24,16 +26,45 @@
     <script src="./models/bottle.class.js"></script>
     <script src="./models/coin.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
+    <script src="./models/controll-objects.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./js/game.js"></script>
     
 </head>
-<body onload="init()">
-    <h1>El Pollo Loco</h1>
+<body>
+    <h1><b>El Pollo Loco</b></h1>
 
-    <canvas id="canvas" width="720" height="480">
+    
+    <div id="container" class="container">
+        <div id="canvas_container" class="canvas-container d-none">
+             <canvas id="canvas" width="720" height="480"></canvas>
+             <div class="fullscreen-sound">
+                <img id="volumenOff" class="volumen-off-btn" src="./img/volume-off-solid.svg" alt="VolumeOff">
+                <img onclick="toggleFullScreen()" id="fullscreen" class="fullscreen volumen-off-btn" src="./img/expand-solid.svg" alt="Fullscreen">
+             </div>
 
-    </canvas>
+             <img id="youwon" class="youwon d-none" src="./img/9_intro_outro_screens/win/won_2.png" alt="">
+             <img id="youlose" class="youwon d-none" src="./img/9_intro_outro_screens/game_over/game over.png" alt="">
+             <div id="play_again" class="play-again-container cont-btns d-none"><button onclick="resetWorld()">Play again</button></div>
+        </div>
+       
+        <div id="content" class="content">
+            <div class="cont-btns">
+                <button onclick="init()"><b>START</b></button>
+                <button onclick="directions()"><b>ANLEITUNG</b></button>
+            </div>
+            <img class="startscreen-img" src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="">
+            <div id="directions" class="directions d-none">
+                <h2>Anleitung</h2>
+                <span>Links laufen: Pfeiltaste Links</span>
+                <span>Rechts laufen: Pfeiltaste Rechts</span>
+                <span>Springen: Space-Taste</span>
+                <span>Flasche werfen: D-Taste</span>
+            </div>
+        </div>
+    </div>
+    <a href="./legalnotice.html">Legal Notice</a>
+    <a href="./privacypolice.html">Privacy Police</a>
 
 </body>
 </html>

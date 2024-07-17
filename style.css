@@ -1,10 +1,134 @@
 body {
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    font-family: 'Papyrus', sans-serif;
+    background-image: url('./img/cactus-background.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
 }
 
-canvas {
-    background-color: black;
+h1 {
+    font-size: 50px;
+    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.d-none {
+    display: none !important;
+}
+
+.container {
+    width: 720px;
+    height: 480px;
+    position: relative;
+}
+
+.canvas-container {
+    position: relative;
+    width: 720px;
+    height: 480px;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+}
+
+.startscreen-img {
+    width: 100%;
+    height: 100%;
+}
+
+.cont-btns {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: -80px;
+}
+
+.cont-btns > button {
+    all: unset;
+    font-size: 24px;
+    border-radius: 10px;
+    border: 1px solid black;
+    padding: 12px;
+    cursor: pointer;
+    background-color: rgb(255, 165, 0);
+    z-index: 2;
+}
+
+.cont-btns > button:hover {
+    box-shadow: 0px 4px 4px 0px #04040440;
+    transform: scale(1.02);
+}
+
+.directions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: 10px;
+    border: 2px dashed black;
+    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 80px;
+    padding-left: 120px;
+    font-size: 24px;
+    box-shadow: 0px 8px 8px 0px #00000040;
+}
+
+h2 {
+    margin-bottom: 0;
+}
+
+.volumen-off-btn {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.volumen-off-btn:hover {
+    transform: scale(1.08);
+}
+
+.youwon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.fullscreen-sound {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: absolute;
+    top: 3%;
+    left: 0;
+    right: 0;
+}
+
+.play-again-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 3%;
+    left: 0;
+    right: 0;
+    margin-bottom: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
 }

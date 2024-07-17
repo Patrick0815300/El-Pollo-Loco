@@ -41,9 +41,44 @@ class Character extends MovableObject {
         '../img/2_character_pepe/4_hurt/H-43.png',
     ];
 
+    IMAGES_IDLE = [
+        '../img/2_character_pepe/1_idle/idle/I-1.png',
+        '../img/2_character_pepe/1_idle/idle/I-2.png',
+        '../img/2_character_pepe/1_idle/idle/I-3.png',
+        '../img/2_character_pepe/1_idle/idle/I-4.png',
+        '../img/2_character_pepe/1_idle/idle/I-5.png',
+        '../img/2_character_pepe/1_idle/idle/I-6.png',
+        '../img/2_character_pepe/1_idle/idle/I-7.png',
+        '../img/2_character_pepe/1_idle/idle/I-8.png',
+        '../img/2_character_pepe/1_idle/idle/I-9.png',
+        '../img/2_character_pepe/1_idle/idle/I-10.png',
+    ];
+
+    IMAGES_LONG_IDLE = [
+        '../img/2_character_pepe/1_idle/long_idle/I-11.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-12.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-13.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-14.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-15.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-17.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-18.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-19.png',
+        '../img/2_character_pepe/1_idle/long_idle/I-20.png',
+
+
+    ];
+
 
     world;
     walking_sound = new Audio('../audio/step.mp3');
+    jump_sound = new Audio('../audio/jump.mp3');
+    throw_sound = new Audio('../audio/throw.mp3');
+    collect_coin_sound = new Audio('../audio/collectCoin.mp3');
+    hurt_sound = new Audio('../audio/hurtCharatcter.mp3');
+    collect_bottle_sound = new Audio('../audio/collectBottle.mp3');
+    hit_endboss_sound = new Audio('../audio/hitEndboss.mp3');
+
+    audio_sounds =[this.walking_sound, this.jump_sound,this.throw_sound, this.collect_coin_sound, this.hurt_sound,this.collect_bottle_sound, this.hit_endboss_sound];
     
     bottles = 10;
     coins = 1;
@@ -54,7 +89,13 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_LONG_IDLE);
         this.applyGravity();
+
+        this.lastActionTime = Date.now(); // Zeitpunkt der letzten Aktion speichern
+        this.inactivityInterval = 10000; // 10 Sekunden Inaktivität
+        this.currentAnimation = null;
         this.animate();
     }
 
@@ -75,6 +116,7 @@ class Character extends MovableObject {
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) { // Wenn der die Taste Space und der Charakter nicht auf dem Boden steht
                 this.jump();
+                this.jump_sound.play();
             }
 
             this.world.camera_x = -this.x + 100; // Verschieben der Welt um die gelaufen Wert x
@@ -84,13 +126,25 @@ class Character extends MovableObject {
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
+                this.lastActionTime = Date.now(); // Aktion registrieren
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+                this.hurt_sound.play();
+                this.lastActionTime = Date.now(); // Aktion registrieren
             } else if (this.isAboveGround()) {
-                    this.playAnimation(this.IMAGES_JUMPING);
+                this.playAnimation(this.IMAGES_JUMPING);
+                this.lastActionTime = Date.now(); // Aktion registrieren
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
+                    this.lastActionTime = Date.now(); // Aktion registrieren
+                } else {
+                    let currentTime = Date.now();
+                    if (currentTime - this.lastActionTime > this.inactivityInterval) {
+                        this.playAnimation(this.IMAGES_LONG_IDLE);
+                    } else {
+                        this.playAnimation(this.IMAGES_IDLE);
+                    }
                 }
             }
         }, 40);
