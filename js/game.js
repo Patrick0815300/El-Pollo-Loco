@@ -1,6 +1,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let isKeyboardEnabled = true;
 
 
 function init() {
@@ -26,7 +27,9 @@ function resetWorld() {
  * Listener to check the key on keyboard
  * the key set the class Keyboard bolean true or false 
  */
-document.addEventListener('keydown', (event) => { 
+function keydownHandler(event) {
+    if (!isKeyboardEnabled) return;
+
     if (event.keyCode == 39) {
         keyboard.RIGHT = true;
     }
@@ -45,9 +48,11 @@ document.addEventListener('keydown', (event) => {
     if (event.keyCode == 68) {
         keyboard.D = true;
     }
-})
+}
 
-document.addEventListener('keyup', (event) => {
+function keyupHandler(event) {
+    if (!isKeyboardEnabled) return;
+
     if (event.keyCode == 39) {
         keyboard.RIGHT = false;
     }
@@ -66,7 +71,20 @@ document.addEventListener('keyup', (event) => {
     if (event.keyCode == 68) {
         keyboard.D = false;
     }
-})
+}
+
+
+document.addEventListener('keydown', keydownHandler);
+document.addEventListener('keyup', keyupHandler);
+
+
+function disableKeyboard() {
+    isKeyboardEnabled = false;
+}
+
+function enableKeyboard() {
+    isKeyboardEnabled = true;
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
 /**
  * function to toggle the fullscreen
@@ -107,4 +126,3 @@ function toggleFullScreen() {
         }
     }
 }
-

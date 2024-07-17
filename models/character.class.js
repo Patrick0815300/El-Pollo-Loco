@@ -77,8 +77,10 @@ class Character extends MovableObject {
     hurt_sound = new Audio('../audio/hurtCharatcter.mp3');
     collect_bottle_sound = new Audio('../audio/collectBottle.mp3');
     hit_endboss_sound = new Audio('../audio/hitEndboss.mp3');
+    snoring_sound = new Audio('../audio/snoring.mp3');
+    hit_chicken_sound = new Audio('../audio/hit-chicken.mp3');
 
-    audio_sounds =[this.walking_sound, this.jump_sound,this.throw_sound, this.collect_coin_sound, this.hurt_sound,this.collect_bottle_sound, this.hit_endboss_sound];
+    audio_sounds =[this.walking_sound, this.jump_sound,this.throw_sound, this.collect_coin_sound, this.hurt_sound,this.collect_bottle_sound, this.hit_endboss_sound, this.snoring_sound];
     
     bottles = 10;
     coins = 1;
@@ -142,6 +144,7 @@ class Character extends MovableObject {
                     let currentTime = Date.now();
                     if (currentTime - this.lastActionTime > this.inactivityInterval) {
                         this.playAnimation(this.IMAGES_LONG_IDLE);
+                        this.snoring_sound.play();
                     } else {
                         this.playAnimation(this.IMAGES_IDLE);
                     }
