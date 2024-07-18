@@ -9,7 +9,6 @@ class SmallChicken extends MovableObject {
     width = 60;
     y = 360;
     hitFromAbove;
-    
 
     constructor() {
         super().loadImage('../img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
@@ -17,7 +16,8 @@ class SmallChicken extends MovableObject {
         this.x = 600 + Math.random() * 2200;
         this.speed = 0.15 + Math.random() * 0.65;
         this.hitFromAbove = false;
-        this.animate();      
+        this.animate();
+        this.offset;      
     }
 
     animate() {

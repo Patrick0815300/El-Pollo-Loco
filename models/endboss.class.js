@@ -43,6 +43,12 @@ class Endboss extends MovableObject {
 
     energy;
     lastHit = 0;
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    };
 
     constructor() {
         super().loadImage(this.IMAGES_ALERT[0]);
@@ -53,7 +59,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
 
         this.energy = 100;
-        this.x = 2000;
+        this.x = 2200;
    
         this.animate();
     }

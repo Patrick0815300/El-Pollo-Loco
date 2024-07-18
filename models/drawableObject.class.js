@@ -6,6 +6,12 @@ class DrawableObject {
     width = 100;
     imageCache = {};
     currentImage = 0;
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    };
 
     loadImage(path) {
     this.img = new Image();
@@ -30,12 +36,18 @@ class DrawableObject {
 
     
     drawFrame(ctx) {
-        if (this instanceof Endboss || this instanceof Chicken || this instanceof Character) { // instanceof nimmt nur die gewälten classen und nicht alle
-            ctx.beginPath();
-            ctx.lineWidth = '5';
-            ctx.strokeStyle = 'blue';
-            ctx.rect(this.x, this.y, this.width, this.height);
-            ctx.stroke();
-        }
+    if (this instanceof Endboss || this instanceof Chicken || this instanceof Character || this instanceof SmallChicken || this instanceof Bottle || this instanceof Coin) { // instanceof nimmt nur die gewälten classen und nicht alle
+        ctx.beginPath();
+        ctx.lineWidth = '3';
+        ctx.strokeStyle = 'blue';
+        ctx.rect(
+            this.x + (this.offset?.left || 0),       // Adjust x position with left offset
+            this.y + (this.offset?.top || 0),        // Adjust y position with top offset
+            this.width - ((this.offset?.left || 0) + (this.offset?.right || 0)), // Adjust width with left and right offsets
+            this.height - ((this.offset?.top || 0) + (this.offset?.bottom || 0)) // Adjust height with top and bottom offsets
+        );
+        ctx.stroke();
     }
+}
+
 }

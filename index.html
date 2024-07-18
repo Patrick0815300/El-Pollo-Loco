@@ -38,10 +38,10 @@
   <body onload="">
     <h1><b>El Pollo Loco</b></h1>
 
-    <canvas id="canvas" width="720" height="480"></canvas>
     <div id="container" class="container">
       <div id="canvas_container" class="canvas-container d-none">
         <!-- CANVAS -->
+        <canvas id="canvas" width="720" height="480"></canvas>
         <div class="fullscreen-sound">
           <img
             id="volumenOff"
@@ -106,10 +106,32 @@
           </div>
         </div>
       </div>
+      <div id="mobile_btns" class="mobile-btns d-none">
+        <div class="left-side">
+          <button id="btn_left">
+            <img src="./img/arrow-left-solid.svg" alt="" />
+          </button>
+          <button id="btn_right">
+            <img src="./img/arrow-right-solid.svg" alt="" />
+          </button>
+        </div>
+        <div class="left-side">
+          <button id="btn_jump">
+            <img src="./img/arrow-up-solid.svg" alt="" />
+          </button>
+          <button id="btn_throw">
+            <img src="./img/wine-bottle-solid.svg" alt="" />
+          </button>
+        </div>
+      </div>
     </div>
     <div class="polices">
       <a href="./legalnotice.html">Legal Notice</a>
       <a href="./privacypolice.html">Privacy Police</a>
     </div>
+
+    <span class="landscape-info d-none"
+      ><b>Turn your Phone to landscape mode</b></span
+    >
   </body>
 </html>

@@ -4,8 +4,15 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;
     lastHit = 0;
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    };
+
     offsetY = 2;
-    
+        
     
 
     moveRight() {
@@ -51,16 +58,16 @@ class MovableObject extends DrawableObject {
     }
 
 
-    isColliding (obj) {
-        return  (this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) && 
-                (this.y + this.offsetY + this.height) >= obj.y &&
-                (this.y + this.offsetY) <= (obj.y + obj.height);
-                // obj.onCollisionCourse; // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt. Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
+    isColliding (mo) {
+        return  this.x + this.width - this.offset.right > mo.x + mo.offset.left && 
+                this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+                this.x + this.offset.left < mo.x + this.width + mo.offset.right &&
+                this.y + this.offset.top < mo.y + this.height + mo.offset.bottom;
     }
     
 
     hit() {
-        this.energy -= 5; 
+        this.energy -= 0.5; 
         if (this.energy < 0) {
             this.energy = 0;
         } else {

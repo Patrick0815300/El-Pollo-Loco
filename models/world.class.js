@@ -32,6 +32,9 @@ class World {
     this.character.collect_coin_sound,
     this.character.hurt_sound,
     this.character.collect_bottle_sound,
+    this.character.snoring_sound,
+    this.character.jump_sound,
+    this.character.hit_chicken_sound
   ];
 
   constructor(canvas, keyboard) {
@@ -57,6 +60,10 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollision();
+    }, 20);
+
+    setInterval(() => {
+      
       this.checkThrowObjects();
       this.checkCollectBottles();
       this.checkCollectCoins();
@@ -82,6 +89,7 @@ class World {
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
+        console.log('Colliding Allgemein');
         if (enemy instanceof Endboss) {
           // Seitliche Kollision für den Endboss
           this.character.hit();
@@ -261,6 +269,7 @@ class World {
       if (this.getEndboss(this.level.enemies).y > 500) {
         document.getElementById("youwon").classList.remove("d-none");
         document.getElementById("play_again").classList.remove("d-none");
+        document.getElementById("mobile-btns").classList.add("d-none");
         this.win_sound.play();
         this.clearAllIntervals();
       }
@@ -268,6 +277,7 @@ class World {
       if (this.character.energy == 0) {
         document.getElementById("youlose").classList.remove("d-none");
         document.getElementById("play_again").classList.remove("d-none");
+        document.getElementById("mobile_btns").classList.add("d-none");
         this.lose_sound.play();
         setTimeout(() => {
           this.clearAllIntervals();
@@ -283,6 +293,7 @@ class World {
     this.soundMuted = true;
     this.audio_sounds.forEach((audio) => (audio.muted = this.soundMuted));
     disableKeyboard();
+    clearAllIntervals();
   }
 
   clearAllIntervals() {

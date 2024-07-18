@@ -4,6 +4,12 @@ class Bottle extends DrawableObject {
     height = 100;
     width = 90;
     y = 330;
+    offset = {
+        top: 10,
+        left: 30,
+        right: 30,
+        bottom: 5
+    }
 
     constructor() {
         super();
