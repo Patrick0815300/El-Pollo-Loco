@@ -10,29 +10,21 @@ class MovableObject extends DrawableObject {
         left: 0,
         right: 0
     };
-
-    offsetY = 2;
         
-    
-
     moveRight() {
         this.x += this.speed;
     }
-
 
     moveLeft() {
         this.x -= this.speed;
     }
 
-
     playAnimation(images) {
-        let i = this.currentImage % images.length; // let i = 0 % 6; Modulo ist der mathematische Rest -> 
-        // i = 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, ...
+        let i = this.currentImage % images.length; 
         let path = images[i];
-        this.img = this.imageCache[path]; // Laden eines Img auf dem Cache
+        this.img = this.imageCache[path];
         this.currentImage++;   
     }
-
 
     applyGravity() {
         setInterval(() => {
@@ -43,7 +35,6 @@ class MovableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
-
     isAboveGround() {
         if (this instanceof ThrowableObject) { // Throwable objects should always fall
             return true;
@@ -52,33 +43,42 @@ class MovableObject extends DrawableObject {
         }
     }
 
-
+    /**
+     * function to jump and increase the speed of the Y
+     */
     jump() {
         this.speedY = 30;
     }
 
-
+    /**
+     * function to check if object colliding
+     * @param {object} mo - all objects
+     * @returns - true by collision
+     */
     isColliding (mo) {
         return  this.x + this.width - this.offset.right > mo.x + mo.offset.left && 
                 this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-                this.x + this.offset.left < mo.x + this.width + mo.offset.right &&
-                this.y + this.offset.top < mo.y + this.height + mo.offset.bottom;
+                this.x + this.offset.left < mo.x + mo.width + mo.offset.right &&
+                this.y + this.offset.top < mo.y + mo.height + mo.offset.bottom;
     }
     
-
+    /**
+     * function to reduce the characters energy and set the lastHit
+     */
     hit() {
         this.energy -= 0.5; 
-        if (this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime(); // Speichern der Zeit in Millisekunden seit dem 01.01.1970
-        }
+        if (this.energy < 0) this.energy = 0;
+        else this.lastHit = new Date().getTime();
     }
 
+    /**
+     * function to get the last hit
+     * @returns - the time how long the animation is after hurt
+     */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
-        timepassed = timepassed / 1000; // Speichern in Sekunden und nicht Millisekunden
-        return timepassed < 0.8; // Zeit wie lange die Animation hurt angezeigt werden soll nach dem hit
+        timepassed = timepassed / 1000; 
+        return timepassed < 0.8;
     }
 
     isDead() {

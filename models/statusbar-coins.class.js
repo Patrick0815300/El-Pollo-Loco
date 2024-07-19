@@ -11,6 +11,6 @@ class StatusbarCoin extends Statusbars {
      setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.IMAGES_STATUS_COIN[this.resolveImageIndex()];  
-        this.img = this.imageCache[path]; // Laden eines Img auf dem Cache
+        this.img = this.imageCache[path];
     }
 }

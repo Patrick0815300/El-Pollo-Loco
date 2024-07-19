@@ -1,30 +1,22 @@
 class World {
   character = new Character();
-  level = level1; // Deklariert das Level mit backgroundObject, clouds, enemies, ...
-
+  level = level1;
   canvas;
   ctx;
   keyboard;
   otherDirection = false;
   camera_x = 0;
-
   statusbar = new Statusbars();
   statusbarBottle = new StatusbarBottle();
   statusbarCoin = new StatusbarCoin();
   statusbarEndboss = new StatusbarEndboss();
-
   throwableObjects = [];
-
   hitObjects = new Set(); // Set, um getroffene Objekte zu verfolgen
-
   volumen = new ControllObjects();
-
   soundMuted;
-
   win_sound = new Audio("../audio/win.mp3");
   lose_sound = new Audio("../audio/lose.mp3");
   background_sound = new Audio("../audio/background.mp3");
-
   audio_sounds = [
     this.win_sound,
     this.lose_sound,
@@ -55,15 +47,11 @@ class World {
   }
 
   /**
-   * to collect all functions
+   * to collect all functions and start them
    */
   run() {
+    setInterval(() => this.checkCollision(), 20);
     setInterval(() => {
-      this.checkCollision();
-    }, 20);
-
-    setInterval(() => {
-      
       this.checkThrowObjects();
       this.checkCollectBottles();
       this.checkCollectCoins();
@@ -73,40 +61,61 @@ class World {
   }
 
   checkThrowObjects() {
-    if (this.keyboard.D && this.character.bottles > 0) {
-      // throw bottles until 0
+    if (this.canThrowBottles()) { // throw bottles until 0
       let bottle = new ThrowableObject(
         this.character.x + this.character.width,
         this.character.y
       );
-      this.throwableObjects.push(bottle);
-      this.character.decreaseObject("bottles");
-      this.statusbarBottle.setPercentage(this.character.bottles * 10);
-      this.character.throw_sound.play();
+      this.throwBottle(bottle);
     }
+  }
+
+  canThrowBottles() {
+    return this.keyboard.D && this.character.bottles > 0;
+  }
+
+  throwBottle(bottle) {
+    this.throwableObjects.push(bottle);
+    this.character.decreaseObject("bottles");
+    this.statusbarBottle.setPercentage(this.character.bottles * 10);
+    this.character.throw_sound.play();
   }
 
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        console.log('Colliding Allgemein');
-        if (enemy instanceof Endboss) {
-          // Seitliche Kollision für den Endboss
+      if (this.collidingWithEnemy(enemy)) {
+        if (enemy instanceof Endboss) this.collidingWithEndboss();
+        else if (this.collidingFromAbove(enemy)) this.crushChicken(enemy);
+        else if (this.noJumpColliding(enemy)) {
           this.character.hit();
-          this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum Setzen der Statusbar
-        } else if (this.character.y < 180 && !enemy.hitFromAbove) {
-          // Kollision von oben für alle anderen Feinde
-          enemy.height = 20;
-          enemy.y += 80;
-          enemy.hitFromAbove = true; // Markiere den Feind als von oben getroffen
-          this.character.hit_chicken_sound.play();
-        } else if (this.character.y == 180 && !enemy.hitFromAbove) {
-          // Seitliche Kollision für alle anderen Feinde
-          this.character.hit();
-          this.statusbar.setPercentage(this.character.energy); // übergibt die Energie zum Setzen der Statusbar
+          this.statusbar.setPercentage(this.character.energy);
         }
       }
     });
+  }
+
+  collidingWithEnemy(enemy) {
+    return this.character.isColliding(enemy);
+  }
+
+  collidingWithEndboss() {
+    this.character.hit();
+    this.statusbar.setPercentage(this.character.energy); 
+  }
+
+  collidingFromAbove(enemy) {
+    return this.character.y < 180 && !enemy.hitFromAbove;
+  }
+
+  crushChicken(enemy) {
+    enemy.height = 20;
+    enemy.y += 80;
+    enemy.hitFromAbove = true; 
+    this.character.hit_chicken_sound.play();
+  }
+
+  noJumpColliding(enemy) {
+    return this.character.y == 180 && !enemy.hitFromAbove;
   }
 
   checkCollectBottles() {
@@ -125,7 +134,7 @@ class World {
       if (this.character.isColliding(object) && object instanceof Coin) {
         this.character.collectObject("coins");
         this.statusbarCoin.setPercentage(this.character.coins * 10);
-        this.level.collectableObjects.splice(index, 1); // delete the collectet bottle by the array in level1
+        this.level.collectableObjects.splice(index, 1); // delete the collectet coin by the array in level1
         this.character.collect_coin_sound.play();
       }
     });
@@ -133,65 +142,76 @@ class World {
 
   throwEnemy() {
     this.throwableObjects.forEach((object) => {
-      if (!this.hitObjects.has(object)) {
-        // Überprüfen, ob das Objekt bereits getroffen wurde
+        if (this.hitObjects.has(object)) return;
         this.level.enemies.forEach((enemy) => {
-          if (enemy.isColliding(object)) {
-            if (enemy instanceof Endboss) {
-              console.log("Treffer Endboss");
-              this.hitObjects.add(object); // Objekt als getroffen markieren
-              this.statusbarEndboss.setPercentage(enemy.energy);
-              enemy.decreaseEnergy();
-              this.character.hit_endboss_sound.play();
-            } else {
-              console.log("Treffer Chicken");
-              this.hitObjects.add(object); // Objekt als getroffen markieren, wenn es kein Endboss ist
-              enemy.height = 20;
-              enemy.y += 80;
-              enemy.hitFromAbove = true;
-              this.character.hit_chicken_sound.play();
-            }
-          }
+            if (!enemy.isColliding(object)) return;
+            this.hitObjects.add(object);
+            this.handleCollision(enemy);
         });
-      }
     });
+  }
+
+  handleCollision(enemy) {
+      if (enemy instanceof Endboss) {
+          this.statusbarEndboss.setPercentage(enemy.energy);
+          enemy.decreaseEnergy();
+          this.character.hit_endboss_sound.play();
+      } else {
+          this.crushChicken(enemy);
+      }
   }
 
   /**
-   * function to draw all to the canvas - background and objects
-   * they will be called minimal 24 per second by the graphical card
+   * Draws all objects on the canvas.
    */
   draw() {
-    // Malt oder Zeichnet alle Sachen in das Canvas(Leinwand)
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Kontext wird zurückgesetzt, da sonst die geladenen Bilder bei jeder Wiederholung neu erscheinen und nicht verschwinden
+    this.clearCanvas();
+    this.ctx.translate(this.camera_x, 0);
+    this.drawMovableObjects();
+    this.ctx.translate(-this.camera_x, 0);
+    this.drawFixedObjects();
+    this.requestNextFrame();
+  }
 
-    this.ctx.translate(this.camera_x, 0); // Kontext = Bildauschnitt/Hintergrund wird verschoben um camera_x
+  /**
+  * Clears the entire canvas.
+  */
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  /**
+  * Draws all movable objects on the canvas.
+  */
+  drawMovableObjects() {
     this.addObjectstoMap(this.level.backgroundObject);
-
     this.addObjectstoMap(this.level.clouds);
     this.addObjectstoMap(this.level.enemies);
     this.addObjectstoMap(this.level.collectableObjects);
-
     this.addToMap(this.statusbarEndboss);
-
     this.addObjectstoMap(this.throwableObjects);
     this.addToMap(this.character);
+  }
 
-    this.ctx.translate(-this.camera_x, 0);
-    // -------- Space for fixed objects on canvas --------
+  /**
+  * Draws all fixed objects on the canvas.
+  */
+  drawFixedObjects() {
     this.addToMap(this.statusbar);
     this.addToMap(this.statusbarBottle);
     this.addToMap(this.statusbarCoin);
-    this.ctx.translate(this.camera_x, 0);
+  }
 
-    this.ctx.translate(-this.camera_x, 0); // Zurück schieben vom Kontext
-
-    // draw() wird immer wieder aufgerufen
+  /**
+  * Requests the next animation frame to keep drawing.
+  */
+  requestNextFrame() {
     let self = this;
     requestAnimationFrame(function () {
-      self.draw();
+        self.draw();
     });
   }
+
 
   /**
    * function to add the MULTIPLE Objects to the Map
@@ -226,9 +246,9 @@ class World {
    * @param {Object} mo - moveableObject Class
    */
   flipImage(mo) {
-    this.ctx.save(); // Speichern des aktuellen Kontext "ctx" mit allen Eigenschaften
-    this.ctx.translate(mo.width, 0); // Verschieben vom Objekt aufgrund der Spiegelung, da sonst das Img verschoben angezeigt werden würde
-    this.ctx.scale(-1, 1); // Spiegeln des Img um 180 grad
+    this.ctx.save(); 
+    this.ctx.translate(mo.width, 0); 
+    this.ctx.scale(-1, 1); 
     mo.x = mo.x * -1;
   }
 
@@ -237,7 +257,7 @@ class World {
    * @param {Object} mo - moveableObject Class
    */
   flipImageBack(mo) {
-    this.ctx.restore(); // Rückängig machen der Spiegelung und des Verschieben bie flipImage
+    this.ctx.restore(); 
     mo.x = mo.x * -1;
   }
 
@@ -260,30 +280,55 @@ class World {
   }
 
   /**
-   * function to check the energy of the Endboss and the Character
-   * if Endboss y > 500 by the dead anmimation the game play a winning animation and stop
-   * if the Characters energy = 0 the game play a lose animation and stop
+   * Checks the energy of the character and endboss at regular intervals.
    */
   checkEnergy() {
     setInterval(() => {
-      if (this.getEndboss(this.level.enemies).y > 500) {
-        document.getElementById("youwon").classList.remove("d-none");
-        document.getElementById("play_again").classList.remove("d-none");
-        document.getElementById("mobile-btns").classList.add("d-none");
+        this.checkEndbossEnergy();
+        this.checkCharacterEnergy();
+    }, 1000);
+  }
+
+  /**
+  * Checks the energy level of the endboss.
+  */
+  checkEndbossEnergy() {
+    if (this.getEndboss(this.level.enemies).y > 500) {
+        this.showWinningScreen();
         this.win_sound.play();
         this.clearAllIntervals();
-      }
+    }
+  }
 
-      if (this.character.energy == 0) {
-        document.getElementById("youlose").classList.remove("d-none");
-        document.getElementById("play_again").classList.remove("d-none");
-        document.getElementById("mobile_btns").classList.add("d-none");
+  /**
+  * Checks the energy level of the character.
+  */
+  checkCharacterEnergy() {
+    if (this.character.energy == 0) {
+        this.showLosingScreen();
         this.lose_sound.play();
         setTimeout(() => {
-          this.clearAllIntervals();
+            this.clearAllIntervals();
         }, 3000);
-      }
-    }, 1000);
+    }
+  }
+
+  /**
+  * Displays the winning screen.
+  */
+  showWinningScreen() {
+    document.getElementById("youwon").classList.remove("d-none");
+    document.getElementById("play_again").classList.remove("d-none");
+    document.getElementById("mobile-btns").classList.add("d-none");
+  }
+
+  /**
+  * Displays the losing screen.
+  */
+  showLosingScreen() {
+    document.getElementById("youlose").classList.remove("d-none");
+    document.getElementById("play_again").classList.remove("d-none");
+    document.getElementById("mobile_btns").classList.add("d-none");
   }
 
   /**

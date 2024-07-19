@@ -3,24 +3,43 @@ let world;
 let keyboard = new Keyboard();
 let isKeyboardEnabled = true;
 
+/**
+ * function to initial the game
+ */
 function init() {
   canvas = document.getElementById("canvas");
-  document.getElementById("content").classList.add("d-none");
-  document.getElementById("canvas_container").classList.remove("d-none");
-  document.getElementById('mobile_btns').classList.remove('d-none')
+  addClassLists();
   initLevel();
   world = new World(canvas, keyboard);
 }
 
+/**
+ * function to toggle the direction for the game
+ */
 function directions() {
   document.getElementById("directions").classList.toggle("d-none");
 }
 
+/**
+ * function to reset the world and reload the side
+ */
 function resetWorld() {
   location.reload();
 }
 
+/**
+ * function to remove the overlay content and add the canvas container
+ */
+function addClassLists() {
+  document.getElementById("content").classList.add("d-none");
+  document.getElementById("canvas_container").classList.remove("d-none");
+  document.getElementById('mobile_btns').classList.remove('d-none');
+}
 
+
+/**
+ * function to for mobile version to track the touch
+ */
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btn_left').addEventListener('touchstart', function() {
       keyboard.LEFT = true;
@@ -113,6 +132,10 @@ function enableKeyboard() {
   isKeyboardEnabled = true;
 }
 
+/**
+ * function to mute the audio
+ * set the opacity of the button
+ */
 document.addEventListener("DOMContentLoaded", () => {
   const volumeOffBtn = document.getElementById("volumenOff");
   volumeOffBtn.addEventListener("click", () => {

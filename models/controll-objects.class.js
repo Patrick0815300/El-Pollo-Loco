@@ -3,6 +3,7 @@ class ControllObjects extends DrawableObject {
     x = 600;
     width = 40;
     height = 60;
+    
     VOLUMEN = ['../img/volume-off-solid.svg'];
 
     constructor() {

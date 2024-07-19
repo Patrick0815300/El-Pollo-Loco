@@ -1,4 +1,10 @@
 class Statusbars extends DrawableObject{
+    height = 50;
+    width = 250;
+    y = 0;
+    x = 30;
+    percentage = 100;
+
     IMAGES_STATUS_HEALTH = [
         '../img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png', // 0
         '../img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png', 
@@ -32,42 +38,27 @@ class Statusbars extends DrawableObject{
         '../img/7_statusbars/2_statusbar_endboss/green/green0.png', // 5
     ];
 
-
-    height = 50;
-    width = 250;
-    y = 0;
-    x = 30;
-    percentage = 100;
-
-
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUS_HEALTH);
-        this.setPercentage(100); // setzt am anfang die 100% health da sonst kein Wert zum abrufen ist
-     }
+        this.setPercentage(100);
+    }
 
-
-    // setPercentage(50)
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.IMAGES_STATUS_HEALTH[this.resolveImageIndex()];  
-        this.img = this.imageCache[path]; // Laden eines Img auf dem Cache
+        this.img = this.imageCache[path]; 
     }
 
-
+    /**
+     * @returns - index number of the image
+     */
     resolveImageIndex() {
-        if (this.percentage == 100) {
-            return 0;
-        } else if (this.percentage > 80) {
-            return 1;
-        } else if (this.percentage > 60) {
-            return 2;
-        } else if (this.percentage > 40) {
-            return 3;
-        } else if (this.percentage > 20) {
-            return 4;
-        } else {
-            return 5;
-        }
+        if (this.percentage == 100) return 0;
+        else if (this.percentage > 80) return 1;
+        else if (this.percentage > 60) return 2;
+        else if (this.percentage > 40) return 3;
+        else if (this.percentage > 20) return 4;
+        else return 5;
     }
 }
