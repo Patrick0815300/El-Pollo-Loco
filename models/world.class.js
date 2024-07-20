@@ -26,7 +26,8 @@ class World {
     this.character.collect_bottle_sound,
     this.character.snoring_sound,
     this.character.jump_sound,
-    this.character.hit_chicken_sound
+    this.character.hit_chicken_sound,
+    this.character.hit_endboss_sound
   ];
 
   constructor(canvas, keyboard) {
@@ -36,7 +37,8 @@ class World {
     this.draw();
     this.setWorld();
     this.run();
-    this.soundMuted = false; // Initialer Zustand des Tons
+    this.soundMuted = false;
+    this.setCharacterForEnemies();
   }
 
   /**
@@ -228,15 +230,12 @@ class World {
    * @param {Object} mo - moveableObject Class
    */
   addToMap(mo) {
-    // hinzufügen des Image / Zeichnen
     if (mo.otherDirection) {
-      // prüfen ob otherDirection gesetzt ist oder nicht beim drücken der Pfeiltaste
       this.flipImage(mo);
     }
     mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
+    // mo.drawFrame(this.ctx);
     if (mo.otherDirection) {
-      // Prüfen ob etwas verändert wurde, wenn ja dann 'restore'
       this.flipImageBack(mo);
     }
   }
@@ -317,15 +316,19 @@ class World {
   * Displays the winning screen.
   */
   showWinningScreen() {
-    document.getElementById("youwon").classList.remove("d-none");
-    document.getElementById("play_again").classList.remove("d-none");
-    document.getElementById("mobile-btns").classList.add("d-none");
+    this.exitFullScreen();
+    try {
+      document.getElementById("youwon").classList.remove("d-none");
+      document.getElementById("play_again").classList.remove("d-none");
+      document.getElementById("mobile-btns").classList.add("d-none");
+    } catch(e){}
   }
 
   /**
   * Displays the losing screen.
   */
   showLosingScreen() {
+    this.exitFullScreen();
     document.getElementById("youlose").classList.remove("d-none");
     document.getElementById("play_again").classList.remove("d-none");
     document.getElementById("mobile_btns").classList.add("d-none");
@@ -343,5 +346,23 @@ class World {
 
   clearAllIntervals() {
     for (let i = 1; i < 9999; i++) window.clearInterval(i);
+  }
+
+  exitFullScreen() {
+    if (document.fullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen();
+       else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+       else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+       else if (document.msExitFullscreen) document.msExitFullscreen();
+    }
+  }
+
+  /**
+   * function to transfer the instance character to the endboss
+   */
+  setCharacterForEnemies() {
+    this.level.enemies.forEach(enemy => {
+      if (enemy instanceof Endboss) enemy.setCharacter(this.character)
+    });
   }
 }

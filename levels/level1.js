@@ -1,5 +1,4 @@
 let level1;
-
 /**
  * function to init the level 
  * if not they will start before

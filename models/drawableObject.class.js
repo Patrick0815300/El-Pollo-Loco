@@ -39,7 +39,7 @@ class DrawableObject {
      * @param {object} ctx - chosen object
      */
     drawFrame(ctx) {
-        if (this instanceof Endboss || this instanceof ThrowableObject) {
+        if (this instanceof Coin || this instanceof Character) {
             ctx.beginPath();
             ctx.lineWidth = '3';
             ctx.strokeStyle = 'blue';

@@ -5,7 +5,7 @@ class Character extends MovableObject {
     y = 180;
     speed = 6;
     offset = {
-        top: 100,
+        top: 200,
         left: 20,
         right: 15,
         bottom: 10
@@ -183,12 +183,12 @@ class Character extends MovableObject {
 
     jumpAnimation() {
         this.playAnimation(this.IMAGES_JUMPING);
-        this.lastActionTime = Date.now(); // Aktion registrieren
+        this.lastActionTime = Date.now();
     }
 
     walkingAnimation() {
         this.playAnimation(this.IMAGES_WALKING);
-        this.lastActionTime = Date.now(); // Aktion registrieren
+        this.lastActionTime = Date.now();
     }
 
     longIdelAnimation() {

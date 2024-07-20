@@ -1,4 +1,5 @@
 class Endboss extends MovableObject {
+    character;
     height = 400;
     width = 300;
     y = 50;
@@ -61,11 +62,16 @@ class Endboss extends MovableObject {
     ];
 
     constructor() {
-        super().loadImage(this.IMAGES_ALERT[0]);
+        super();
+        super.loadImage(this.IMAGES_ALERT[0]);
         this.imageArray.forEach(images => this.loadImages(images));
         this.energy = 100;
         this.x = 2000;
         this.animate();
+    }
+
+    setCharacter(character) {
+        this.character = character;
     }
 
     animate() {
@@ -76,7 +82,7 @@ class Endboss extends MovableObject {
                 this.y += 50;
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-            }
+            } else if (this.characterIsComing()) this.playAnimation(this.IMAGES_ATTACK);
         }, 200);
     }
 
@@ -88,5 +94,13 @@ class Endboss extends MovableObject {
         this.energy -= 20;
         if (this.energy < 0) this.energy = 0;
          else this.lastHit = new Date().getTime();
+    }
+
+    /**
+     * function to play the attack animation
+     * @returns - true or false
+     */
+    characterIsComing() {
+        return this.character.x > 1550;
     }
 }
