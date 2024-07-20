@@ -5,13 +5,12 @@ class StatusbarBottle extends Statusbars {
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUS_BOTTLE);
-        this.setPercentage(100); // setzt am anfang die 100% health da sonst kein Wert zum abrufen ist
+        this.setPercentage(100); // set the 100 for having a value
      }
 
-     
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.IMAGES_STATUS_BOTTLE[this.resolveImageIndex()];  
-        this.img = this.imageCache[path]; // Laden eines Img auf dem Cache
+        this.img = this.imageCache[path];
     }
 }
