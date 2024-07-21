@@ -73,7 +73,7 @@ class World {
   }
 
   checkThrowObjects() {
-    if (this.canThrowBottles()) { // throw bottles until 0
+    if (this.canThrowBottles() && this.character.checkOrientation) { // throw bottles until 0
       let bottle = new ThrowableObject(
         this.character.x + this.character.width,
         this.character.y
@@ -165,8 +165,8 @@ class World {
 
   handleCollision(enemy) {
       if (enemy instanceof Endboss) {
-          this.statusbarEndboss.setPercentage(enemy.energy);
           enemy.decreaseEnergy();
+          this.statusbarEndboss.setPercentage(enemy.energy);
           this.character.hit_endboss_sound.play();
       } else {
           this.crushChicken(enemy);

@@ -14,13 +14,16 @@ class MovableObject extends DrawableObject {
     prevY = 0;
     prevSpeedY = 0;
     collidingAbove;
+    checkOrientation = true;
         
     moveRight() {
         this.x += this.speed;
+        this.checkOrientation = true;
     }
 
     moveLeft() {
         this.x -= this.speed;
+        this.checkOrientation = false;
     }
 
     playAnimation(images) {

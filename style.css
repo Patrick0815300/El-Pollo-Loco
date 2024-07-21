@@ -222,7 +222,7 @@ footer > a {
 
 /*---------------- Smartphones ---------------- */
 
-@media (orientation: portrait) {
+@media (orientation: portrait) and (max-width: 720px) {
   h1 {
     display: none;
   }

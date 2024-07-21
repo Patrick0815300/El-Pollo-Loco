@@ -1,8 +1,8 @@
 class StatusbarEndboss extends Statusbars {
-    percentage = 100;
     y = 30;
     width = 200;
     height = 40;
+    percentage = 100;
 
     constructor() {
         super();
