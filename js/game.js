@@ -24,6 +24,13 @@ function directions() {
  * function to reset the world and reload the side
  */
 function resetWorld() {
+  init();
+  document.getElementById("youwon").classList.add("d-none");
+  document.getElementById("youlose").classList.add("d-none");
+  document.getElementById("play_again").classList.add("d-none");
+}
+
+function returnToMenu() {
   location.reload();
 }
 

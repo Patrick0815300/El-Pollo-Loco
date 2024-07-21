@@ -4,12 +4,16 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;
     lastHit = 0;
+    isAnimationRunning = false;
     offset = {
         top: 0,
         bottom: 0,
         left: 0,
         right: 0
     };
+    prevY = 0;
+    prevSpeedY = 0;
+    collidingAbove;
         
     moveRight() {
         this.x += this.speed;
@@ -26,9 +30,35 @@ class MovableObject extends DrawableObject {
         this.currentImage++;   
     }
 
+    playSingleRunAnimation(images, interval) {
+        if (this.isAnimationRunning) return; // Prevent multiple invocations
+
+        this.isAnimationRunning = true; // Set the flag to true to indicate the animation is running
+        this.currentImage = 0; // Reset the image index for a new run
+        this.intervalId = setInterval(() => {
+            if (this.currentImage < images.length) {
+                let path = images[this.currentImage];
+                this.img = this.imageCache[path];
+                this.currentImage++;
+            } else {
+                this.stopAnimation();
+            }
+        }, interval);
+    }
+
+    stopAnimation() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
+        this.isAnimationRunning = false; // Reset the flag to allow future animations
+    }
+
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
+                this.prevY = this.y
+                this.prevSpeedY = this.speedY
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
             }
@@ -60,6 +90,11 @@ class MovableObject extends DrawableObject {
                 this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
                 this.x + this.offset.left < mo.x + mo.width + mo.offset.right &&
                 this.y + this.offset.top < mo.y + mo.height + mo.offset.bottom;
+    }
+
+    isSpeedYDecreasing() {
+        if (this.y > this.prevY) return true;
+        else return false;
     }
     
     /**

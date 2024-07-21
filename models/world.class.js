@@ -27,7 +27,8 @@ class World {
     this.character.snoring_sound,
     this.character.jump_sound,
     this.character.hit_chicken_sound,
-    this.character.hit_endboss_sound
+    this.character.hit_endboss_sound,
+    this.background_sound
   ];
 
   constructor(canvas, keyboard) {
@@ -39,6 +40,7 @@ class World {
     this.run();
     this.soundMuted = false;
     this.setCharacterForEnemies();
+    this.backgroundMusic();
   }
 
   /**
@@ -52,14 +54,22 @@ class World {
    * to collect all functions and start them
    */
   run() {
-    setInterval(() => this.checkCollision(), 20);
+    setInterval(() => {
+      this.checkCollision();
+      
+    }, 20);
     setInterval(() => {
       this.checkThrowObjects();
       this.checkCollectBottles();
       this.checkCollectCoins();
       this.throwEnemy();
       this.checkEnergy();
+      this.characterIsComing();
     }, 200);
+  }
+
+  backgroundMusic() {
+    setInterval(() => this.background_sound.play(), 1000);
   }
 
   checkThrowObjects() {
@@ -87,7 +97,7 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (this.collidingWithEnemy(enemy)) {
         if (enemy instanceof Endboss) this.collidingWithEndboss();
-        else if (this.collidingFromAbove(enemy)) this.crushChicken(enemy);
+        else if (this.colldingAbove()) this.crushChicken(enemy);
         else if (this.noJumpColliding(enemy)) {
           this.character.hit();
           this.statusbar.setPercentage(this.character.energy);
@@ -105,8 +115,8 @@ class World {
     this.statusbar.setPercentage(this.character.energy); 
   }
 
-  collidingFromAbove(enemy) {
-    return this.character.y < 180 && !enemy.hitFromAbove;
+  colldingAbove() {
+    return this.character.isAboveGround() && this.character.isSpeedYDecreasing();
   }
 
   crushChicken(enemy) {
@@ -364,5 +374,11 @@ class World {
     this.level.enemies.forEach(enemy => {
       if (enemy instanceof Endboss) enemy.setCharacter(this.character)
     });
+  }
+
+  characterIsComing() {
+    if (Math.abs((this.character.x + this.character.width) - this.getEndboss(this.level.enemies).x) < 250) {
+      this.statusbarEndboss.x = this.getEndboss(this.level.enemies).x;
+    }
   }
 }

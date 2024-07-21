@@ -6,6 +6,7 @@ class DrawableObject {
     width = 100;
     imageCache = {};
     currentImage = 0;
+    intervalId = null;
     offset = {
         top: 0,
         bottom: 0,

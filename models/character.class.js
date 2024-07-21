@@ -12,6 +12,7 @@ class Character extends MovableObject {
     }
     bottles = 10;
     coins = 1;
+    prevY = 180;
 
     IMAGES_WALKING = [
         '../img/2_character_pepe/2_walk/W-21.png',
@@ -103,6 +104,7 @@ class Character extends MovableObject {
         this.inactivityInterval = 10000; // 10 sec no activity
         this.currentAnimation = null;
         this.animate();
+        this.collidingAbove = false;
     }
 
     /**
@@ -182,7 +184,7 @@ class Character extends MovableObject {
     }
 
     jumpAnimation() {
-        this.playAnimation(this.IMAGES_JUMPING);
+        this.playSingleRunAnimation(this.IMAGES_JUMPING, 100);
         this.lastActionTime = Date.now();
     }
 

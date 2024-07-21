@@ -82,7 +82,10 @@ class Endboss extends MovableObject {
                 this.y += 50;
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-            } else if (this.characterIsComing()) this.playAnimation(this.IMAGES_ATTACK);
+            } else if (this.characterIsComing()) {
+                this.playAnimation(this.IMAGES_ATTACK)
+                this.x -= 30;
+            };
         }, 200);
     }
 
@@ -101,6 +104,6 @@ class Endboss extends MovableObject {
      * @returns - true or false
      */
     characterIsComing() {
-        return this.character.x > 1550;
+        return Math.abs((this.character.x + this.character.width) - this.x ) < 250;
     }
 }
